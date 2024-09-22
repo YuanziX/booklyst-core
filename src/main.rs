@@ -1,15 +1,11 @@
-use misc::misc_router;
 use tokio::net::TcpListener;
 
 use axum::{Extension, Router};
 use sea_orm::{ConnectOptions, Database};
-use user::user_router;
 
-mod handlers;
-mod models;
-mod routes;
+mod misc;
+mod user;
 mod util;
-use crate::routes::*;
 
 #[tokio::main]
 async fn main() {
@@ -34,8 +30,8 @@ async fn main() {
     println!("listening on {}", listener.local_addr().unwrap());
 
     let app = Router::new()
-        .merge(misc_router())
-        .nest("/user", user_router())
+        .merge(misc::router::misc_router())
+        .nest("/user", user::router::user_router())
         .layer(Extension(db));
 
     axum::serve(listener, app)
