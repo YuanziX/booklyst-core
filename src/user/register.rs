@@ -1,14 +1,16 @@
-use axum::{http::StatusCode, response::IntoResponse, Extension, Json};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use bcrypt::{hash, DEFAULT_COST};
 use entity::user;
-use sea_orm::{ActiveModelTrait, DatabaseConnection, Set};
+use sea_orm::{ActiveModelTrait, Set};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use thiserror::Error;
 use validator::Validate;
 
+use crate::AppState;
+
 pub async fn register_user(
-    Extension(db): Extension<DatabaseConnection>,
+    State(state): State<AppState>,
     Json(user_data): Json<CreateUserRequest>,
 ) -> Result<Json<CreateUserResponse>, UserCreationError> {
     user_data.validate()?;
@@ -24,7 +26,7 @@ pub async fn register_user(
         ..Default::default()
     };
 
-    user.insert(&db)
+    user.insert(&state.db)
         .await
         .map_err(UserCreationError::DatabaseError)?;
 

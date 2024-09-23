@@ -1,23 +1,22 @@
-use axum::{debug_handler, http::StatusCode, response::IntoResponse, Extension, Json};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, Json};
 use entity::user;
-use sea_orm::{ColumnTrait, DatabaseConnection, EntityTrait, QueryFilter};
+use sea_orm::{ColumnTrait, EntityTrait, QueryFilter};
 use serde::{Deserialize, Serialize};
 use serde_json::json;
 use thiserror::Error;
 use validator::Validate;
 
-use crate::util::jwt::create_jwt;
+use crate::{util::jwt::create_jwt, AppState};
 
-#[debug_handler]
 pub async fn login_user(
-    Extension(db): Extension<DatabaseConnection>,
+    State(state): State<AppState>,
     Json(user_data): Json<LoginUserRequest>,
 ) -> Result<Json<LoginUserResponse>, UserLoginError> {
     user_data.validate()?;
 
     let user = user::Entity::find()
         .filter(user::Column::Email.eq(&user_data.email))
-        .one(&db)
+        .one(&state.db)
         .await
         .map_err(UserLoginError::DatabaseError)?;
 
@@ -26,7 +25,7 @@ pub async fn login_user(
     if bcrypt::verify(&user_data.password, &user.password_hash)
         .map_err(UserLoginError::ErrorVerifyingPassword)?
     {
-        let token = create_jwt(&user_data.email).map_err(|_| {
+        let token = create_jwt(&user_data.email, &state.app_config.jwt_secret).map_err(|_| {
             UserLoginError::InternalServerError("failed while creating jwt token".to_owned())
         })?;
 

@@ -1,7 +1,5 @@
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
-use lazy_static::lazy_static;
 use serde::{Deserialize, Serialize};
-use std::env;
 
 #[derive(Serialize, Deserialize)]
 struct Claims {
@@ -9,11 +7,7 @@ struct Claims {
     exp: usize,
 }
 
-lazy_static! {
-    static ref JWT_SECRET: String = env::var("JWT_SECRET").expect("JWT_SECRET must be set");
-}
-
-pub fn create_jwt(email: &str) -> Result<String, jsonwebtoken::errors::Error> {
+pub fn create_jwt(email: &str, jwt_secret: &str) -> Result<String, jsonwebtoken::errors::Error> {
     let expiration = chrono::Utc::now()
         .checked_add_signed(chrono::Duration::weeks(4))
         .expect("valid timestamp")
@@ -27,18 +21,18 @@ pub fn create_jwt(email: &str) -> Result<String, jsonwebtoken::errors::Error> {
     let token = encode(
         &Header::default(),
         &claims,
-        &EncodingKey::from_secret(JWT_SECRET.as_ref()),
+        &EncodingKey::from_secret(jwt_secret.as_ref()),
     )?;
 
     Ok(token)
 }
 
-fn validate_jwt(token: &str) -> Result<Claims, jsonwebtoken::errors::Error> {
+pub fn validate_jwt(token: &str, jwt_secret: &str) -> Result<String, jsonwebtoken::errors::Error> {
     let decoded = decode::<Claims>(
         token,
-        &DecodingKey::from_secret(JWT_SECRET.as_ref()),
+        &DecodingKey::from_secret(jwt_secret.as_ref()),
         &Validation::default(),
     )?;
 
-    Ok(decoded.claims)
+    Ok(decoded.claims.sub)
 }
