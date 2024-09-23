@@ -25,7 +25,12 @@ pub async fn login_user(
     if bcrypt::verify(&user_data.password, &user.password_hash)
         .map_err(UserLoginError::ErrorVerifyingPassword)?
     {
-        let token = create_jwt(&user_data.email, &state.app_config.jwt_secret).map_err(|_| {
+        let token = create_jwt(
+            &user_data.email,
+            user.is_admin,
+            &state.app_config.jwt_secret,
+        )
+        .map_err(|_| {
             UserLoginError::InternalServerError("failed while creating jwt token".to_owned())
         })?;
 
