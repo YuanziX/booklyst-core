@@ -5,6 +5,7 @@ use tokio::net::TcpListener;
 mod middleware;
 mod misc;
 mod user;
+mod book;
 mod util;
 
 use util::app_config::AppConfig;
@@ -41,6 +42,7 @@ async fn main() {
 
     let app = Router::new()
         .nest("/user", user::router::user_router(&app_state))
+        .nest("/book", book::router::book_router(&app_state))
         .with_state(app_state)
         .merge(misc::router::misc_router());
 
