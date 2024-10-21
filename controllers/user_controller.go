@@ -102,5 +102,5 @@ func (ac *AppConfig) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.RespondJSON(w, http.StatusOK, "User deleted")
+	utils.RespondJSON(w, http.StatusOK, map[string]string{"message": "User deleted"})
 }
