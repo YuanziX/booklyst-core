@@ -10,7 +10,7 @@ import (
 // objects to attach the credentials to the request context
 type contextKey string
 
-const credsContextKey contextKey = "creds"
+const CredsContextKey contextKey = "creds"
 
 type Creds struct {
 	ID    int64
@@ -38,6 +38,6 @@ func (ac *AppConfig) AuthMiddlware(next http.HandlerFunc) http.HandlerFunc {
 			Role:  res.Role,
 		}
 
-		next(w, r.WithContext(context.WithValue(r.Context(), credsContextKey, creds)))
+		next(w, r.WithContext(context.WithValue(r.Context(), CredsContextKey, creds)))
 	}
 }

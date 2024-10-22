@@ -95,7 +95,7 @@ func (ac *AppConfig) PostLoginUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (ac *AppConfig) DeleteUser(w http.ResponseWriter, r *http.Request) {
-	creds := r.Context().Value(credsContextKey).(Creds)
+	creds := r.Context().Value(CredsContextKey).(Creds)
 	err := ac.DB.DeleteUserByID(r.Context(), creds.ID)
 	if err != nil {
 		utils.RespondError(w, http.StatusInternalServerError, err.Error())

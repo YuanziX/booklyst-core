@@ -32,6 +32,7 @@ type Book struct {
 	RentalPricePerDay sql.NullFloat64
 	CreatedAt         sql.NullTime
 	UpdatedAt         sql.NullTime
+	ImgUrl            sql.NullString
 }
 
 type CartItem struct {
