@@ -12,5 +12,4 @@ CREATE INDEX wishlists_user_id_idx ON wishlists (user_id);
 
 -- +goose Down
 DROP INDEX wishlists_user_id_idx;
-DROP INDEX wishlists_book_id_idx;
 DROP TABLE wishlists;
