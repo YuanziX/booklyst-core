@@ -10,7 +10,10 @@ run: build
 status:
 	@sudo systemctl status booklyst-core
 
-serve: pull build
+migrate:
+	@~/go/bin/goose sqlite3 -dir sql/migrations app.db up
+
+serve: pull build migrate
 	@sudo systemctl restart booklyst-core nginx
 	@sleep 1
 	@$(MAKE) status
