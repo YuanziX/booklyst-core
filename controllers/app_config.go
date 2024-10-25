@@ -1,9 +1,14 @@
 package controllers
 
-import "github.com/yuanzix/booklyst-core/internal/database"
+import (
+	"database/sql"
+
+	"github.com/yuanzix/booklyst-core/internal/database"
+)
 
 type AppConfig struct {
-	DB         *database.Queries
+	Query      *database.Queries
+	DB         *sql.DB
 	SERVER_URL string
 	PORT       string
 	JWT_SECRET string

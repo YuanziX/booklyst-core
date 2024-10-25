@@ -16,7 +16,7 @@ func (ac *AppConfig) GetCartItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cartItems, err := ac.DB.GetCartItemsByUserID(r.Context(), creds.ID)
+	cartItems, err := ac.Query.GetCartItemsByUserID(r.Context(), creds.ID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			utils.RespondJSON(
@@ -63,7 +63,7 @@ func (ac *AppConfig) PostSetItemInCart(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if params.Quantity == 0 {
-		err := ac.DB.RemoveItemFromCart(r.Context(), database.RemoveItemFromCartParams{
+		err := ac.Query.RemoveItemFromCart(r.Context(), database.RemoveItemFromCartParams{
 			UserID: creds.ID,
 			BookID: params.BookId,
 		})
@@ -77,7 +77,7 @@ func (ac *AppConfig) PostSetItemInCart(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := ac.DB.AddItemToCart(r.Context(), database.AddItemToCartParams{
+	err := ac.Query.AddItemToCart(r.Context(), database.AddItemToCartParams{
 		UserID: creds.ID,
 		BookID: params.BookId,
 		Quantity: sql.NullInt64{

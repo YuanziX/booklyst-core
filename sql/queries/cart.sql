@@ -16,3 +16,7 @@ DO UPDATE SET
 -- name: RemoveItemFromCart :exec
 DELETE FROM cart_items
 WHERE user_id = ? AND book_id = ?;
+
+-- name: ClearCart :exec
+DELETE FROM cart_items
+WHERE user_id = ?;

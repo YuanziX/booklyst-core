@@ -17,7 +17,7 @@ func (ac *AppConfig) GetBooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	PAGE_SIZE := 20
-	books, err := ac.DB.GetBooksByOffset(r.Context(), database.GetBooksByOffsetParams{
+	books, err := ac.Query.GetBooksByOffset(r.Context(), database.GetBooksByOffsetParams{
 		Limit:  int64(PAGE_SIZE),
 		Offset: int64((page - 1) * PAGE_SIZE),
 	})
@@ -45,7 +45,7 @@ func (ac *AppConfig) GetBookByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := ac.DB.GetBookByID(r.Context(), int64(id))
+	book, err := ac.Query.GetBookByID(r.Context(), int64(id))
 	if err != nil {
 		if err == sql.ErrNoRows {
 			utils.RespondError(w, http.StatusBadRequest, "Book with given id does not exist")

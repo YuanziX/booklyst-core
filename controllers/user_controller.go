@@ -25,7 +25,7 @@ func (ac *AppConfig) PostCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := ac.DB.GetUserByEmail(r.Context(), params.Email)
+	_, err := ac.Query.GetUserByEmail(r.Context(), params.Email)
 	if err != sql.ErrNoRows {
 		if err == nil {
 			utils.RespondError(w, http.StatusConflict, "User already exists")
@@ -41,7 +41,7 @@ func (ac *AppConfig) PostCreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := ac.DB.CreateUser(r.Context(), database.CreateUserParams{
+	user, err := ac.Query.CreateUser(r.Context(), database.CreateUserParams{
 		FirstName:    params.FirstName,
 		LastName:     params.LastName,
 		Email:        params.Email,
@@ -69,7 +69,7 @@ func (ac *AppConfig) PostLoginUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := ac.DB.GetUserIdRoleAndPasswordByEmail(r.Context(), params.Email)
+	user, err := ac.Query.GetUserIdRoleAndPasswordByEmail(r.Context(), params.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			utils.RespondError(w, http.StatusNotFound, "User not found")
@@ -96,7 +96,7 @@ func (ac *AppConfig) PostLoginUser(w http.ResponseWriter, r *http.Request) {
 
 func (ac *AppConfig) DeleteUser(w http.ResponseWriter, r *http.Request) {
 	creds := r.Context().Value(CredsContextKey).(Creds)
-	err := ac.DB.DeleteUserByID(r.Context(), creds.ID)
+	err := ac.Query.DeleteUserByID(r.Context(), creds.ID)
 	if err != nil {
 		utils.RespondError(w, http.StatusInternalServerError, err.Error())
 		return

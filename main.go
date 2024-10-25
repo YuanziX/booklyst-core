@@ -42,7 +42,8 @@ func main() {
 	queries := database.New(db)
 
 	appConfig := controllers.AppConfig{
-		DB:         queries,
+		Query:      queries,
+		DB:         db,
 		SERVER_URL: SERVER_URL,
 		PORT:       PORT,
 		JWT_SECRET: JWT_SECRET,

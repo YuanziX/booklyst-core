@@ -26,7 +26,7 @@ func (ac *AppConfig) AuthMiddlware(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
-		res, err := ac.DB.GetUserIdRoleAndPasswordByEmail(r.Context(), email)
+		res, err := ac.Query.GetUserIdRoleAndPasswordByEmail(r.Context(), email)
 		if err != nil {
 			utils.RespondError(w, http.StatusInternalServerError, err.Error())
 			return

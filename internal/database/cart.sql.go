@@ -30,6 +30,16 @@ func (q *Queries) AddItemToCart(ctx context.Context, arg AddItemToCartParams) er
 	return err
 }
 
+const clearCart = `-- name: ClearCart :exec
+DELETE FROM cart_items
+WHERE user_id = ?
+`
+
+func (q *Queries) ClearCart(ctx context.Context, userID int64) error {
+	_, err := q.db.ExecContext(ctx, clearCart, userID)
+	return err
+}
+
 const getCartItemsByUserID = `-- name: GetCartItemsByUserID :many
 SELECT c.book_id, c.quantity, b.title, b.price
 FROM cart_items c

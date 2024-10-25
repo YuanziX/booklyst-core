@@ -12,11 +12,11 @@ import (
 type Address struct {
 	ID        int64
 	UserID    int64
-	Street    sql.NullString
-	City      sql.NullString
-	State     sql.NullString
-	ZipCode   sql.NullString
-	Country   sql.NullString
+	Street    string
+	City      string
+	State     string
+	ZipCode   string
+	Country   string
 	CreatedAt sql.NullTime
 	UpdatedAt sql.NullTime
 }
@@ -47,20 +47,22 @@ type CartItem struct {
 type Order struct {
 	ID         int64
 	UserID     int64
+	AddressID  int64
 	TotalPrice float64
 	Status     string
 	CreatedAt  sql.NullTime
 	UpdatedAt  sql.NullTime
+	Foreign    interface{}
 }
 
 type OrderItem struct {
-	ID        int64
-	OrderID   int64
-	BookID    int64
-	Quantity  sql.NullInt64
-	Price     float64
-	CreatedAt sql.NullTime
-	UpdatedAt sql.NullTime
+	ID           int64
+	OrderID      int64
+	BookID       int64
+	Quantity     sql.NullInt64
+	PricePerItem float64
+	CreatedAt    sql.NullTime
+	UpdatedAt    sql.NullTime
 }
 
 type Payment struct {
